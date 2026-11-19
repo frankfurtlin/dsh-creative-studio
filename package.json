@@ -1,0 +1,51 @@
+{
+  "name": "dsh-creative-studio",
+  "version": "0.5.0",
+  "private": true,
+  "description": "创作台：内容创作、设计、设计元素、Logo 四个工作台合一的 DSH 插件，统一浅色视觉规范。",
+  "type": "module",
+  "license": "AGPL-3.0-only",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./client": {
+      "default": "./client.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-renderer",
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-runtime"
+      ]
+    }
+  },
+  "files": [
+    "lib",
+    "src",
+    "scripts",
+    "vendor",
+    "client.js",
+    "cordis.patch.yml",
+    "verification",
+    "README.md",
+    "NOTICE.md"
+  ],
+  "scripts": {
+    "build:client": "node scripts/build-client.mjs",
+    "check": "node --check lib/index.js && node --check lib/pixel-logo.js && node --check client.js && node --check src/client.js && node --check scripts/build-client.mjs && node --check verification/verify-ui.mjs"
+  },
+  "dependencies": {
+    "playwright": "1.63.0",
+    "puppeteer-core": "^24.0.0",
+    "subset-font": "^2.9.0"
+  }
+}

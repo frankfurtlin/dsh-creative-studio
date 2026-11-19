@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>像素 Logo 实验室</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css?v=20260720-1" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand-block">
+        <div class="brand-mark">O3</div>
+        <div>
+          <h1>像素 Logo 实验室</h1>
+          <p id="projectMeta">Jersey 20 · 48×20 逻辑网格</p>
+        </div>
+      </div>
+
+      <div class="project-control">
+        <div class="project-switchers">
+          <div class="preset-switcher" role="group" aria-label="主样板切换">
+            <button data-preset="full">全称</button>
+            <button data-preset="symbol-o3-core" title="直接放大全称中的 O3 核心模块">O3 核心</button>
+            <button data-preset="symbol-o3-micro" title="针对 16px 场景的正式光学尺寸；20px 以上优先使用 O3 核心">O3 微型</button>
+          </div>
+        </div>
+        <label class="project-name">
+          <span>工程</span>
+          <input id="projectName" value="W3O 主题演讲映射" />
+        </label>
+      </div>
+
+      <div class="command-bar" aria-label="编辑命令">
+        <button id="undoBtn" class="icon-button" title="撤销 (⌘Z)" aria-label="撤销">↶</button>
+        <button id="redoBtn" class="icon-button" title="重做 (⌘⇧Z)" aria-label="重做">↷</button>
+        <button id="saveVersionBtn" class="primary-button">保存版本</button>
+        <span id="saveState" class="save-state">已同步</span>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <aside class="sidebar left-sidebar">
+        <section id="opticalControls" class="panel-section optical-controls" hidden>
+          <div class="section-heading"><h2>O3 光学校正</h2></div>
+          <label class="inline-control stacked">
+            <span>专业预设</span>
+            <select id="opticalPreset"></select>
+          </label>
+          <label class="toggle-control optical-spacing-toggle">
+            <input id="opticalPreserveSpacing" type="checkbox" checked />
+            <span>保持母版字间距</span>
+          </label>
+          <div class="optical-control-grid">
+            <label class="inline-control stacked">
+              <span>横向缩放 %</span>
+              <input id="opticalScaleX" type="number" min="90" max="112" step="0.1" />
+            </label>
+            <label class="inline-control stacked">
+              <span>纵向缩放 %</span>
+              <input id="opticalScaleY" type="number" min="90" max="112" step="0.1" />
+            </label>
+          </div>
+          <div class="optical-control-grid">
+            <label class="inline-control stacked">
+              <span>横向位移</span>
+              <input id="opticalTranslateX" type="number" min="-2" max="2" step="0.05" />
+            </label>
+            <label class="inline-control stacked">
+              <span>纵向位移</span>
+              <input id="opticalTranslateY" type="number" min="-2" max="2" step="0.05" />
+            </label>
+          </div>
+          <div class="optical-readouts" aria-live="polite">
+            <p id="opticalSizeReadout">O3 输出尺寸</p>
+            <p id="opticalSpacingReadout">左右间距</p>
+            <p id="opticalLayoutReadout">两侧联动</p>
+            <p id="opticalSafetyReadout">导出安全区</p>
+          </div>
+          <p class="muted-copy">主字标不缩放；开启字间距保护时会等量向外联动。O 和透明 3 以共同中心同步变换。</p>
+        </section>
+
+        <section id="layersSection" class="panel-section layers-section">
+          <div class="section-heading">
+            <h2>图层</h2>
+            <button id="addLayerBtn" class="small-button" title="新增图层">＋</button>
+          </div>
+          <div id="layerList" class="layer-list" aria-label="图层列表"></div>
+          <div class="layer-actions">
+            <button id="duplicateLayerBtn">复制</button>
+            <button id="deleteLayerBtn">删除</button>
+          </div>
+          <div class="layer-actions">
+            <button id="addAsteriskBtn">添加星号</button>
+            <button id="importVectorBtn">导入 SVG</button>
+            <input id="vectorFile" type="file" accept="image/svg+xml" hidden />
+            <span class="muted-copy vector-layer-note">连续矢量图层</span>
+          </div>
+          <div class="layer-order" aria-label="调整层级">
+            <button data-order="top" title="置顶">置顶</button>
+            <button data-order="up" title="上移一层">上移</button>
+            <button data-order="down" title="下移一层">下移</button>
+            <button data-order="bottom" title="置底">置底</button>
+          </div>
+          <label class="inline-control stacked layer-composite-control">
+            <span>图层合成</span>
+            <select id="layerBlendMode">
+              <option value="normal">正常</option>
+              <option value="erase">挖空（透明负形）</option>
+            </select>
+          </label>
+        </section>
+
+        <section id="moveLayerSection" class="panel-section">
+          <div class="section-heading"><h2>移动图层</h2></div>
+          <div class="nudge-grid" aria-label="按格移动图层">
+            <span></span><button data-nudge="0,-1" title="上移一格">↑</button><span></span>
+            <button data-nudge="-1,0" title="左移一格">←</button>
+            <button id="resetOffsetBtn" title="复位图层偏移">•</button>
+            <button data-nudge="1,0" title="右移一格">→</button>
+            <span></span><button data-nudge="0,1" title="下移一格">↓</button><span></span>
+          </div>
+          <div class="offset-input-grid">
+            <label class="inline-control stacked">
+              <span>横向偏移 ΔX</span>
+              <input id="layerOffsetX" type="number" min="-256" max="512" step="0.0001" />
+            </label>
+            <label class="inline-control stacked">
+              <span>纵向偏移 ΔY</span>
+              <input id="layerOffsetY" type="number" min="-256" max="512" step="0.0001" />
+            </label>
+          </div>
+          <p id="offsetReadout" class="muted-copy">偏移 ΔX 0, ΔY 0</p>
+          <p class="muted-copy">箭头每次移动 1 个逻辑格；矢量图层可输入至小数点后四位，像素图层保持整数格。</p>
+        </section>
+
+        <section id="vectorControls" class="panel-section" hidden>
+          <div class="section-heading"><h2>矢量变换</h2></div>
+          <div class="vector-position-grid">
+            <label class="inline-control stacked">
+              <span>基础 X 位置（逻辑格）</span>
+              <input id="vectorX" type="number" min="-256" max="512" step="0.0001" />
+            </label>
+            <label class="inline-control stacked">
+              <span>基础 Y 位置（逻辑格）</span>
+              <input id="vectorY" type="number" min="-256" max="512" step="0.0001" />
+            </label>
+          </div>
+          <div class="vector-position-grid vector-size-grid">
+            <label class="inline-control stacked">
+              <span>宽度（逻辑格）</span>
+              <input id="vectorWidth" type="number" min="0.25" max="256" step="0.0001" />
+            </label>
+            <label class="inline-control stacked">
+              <span>高度（逻辑格）</span>
+              <input id="vectorHeight" type="number" min="0.25" max="256" step="0.0001" />
+            </label>
+          </div>
+          <label class="toggle-control vector-aspect-lock">
+            <input id="vectorAspectLock" type="checkbox" checked />
+            <span>锁定比例（中心缩放）</span>
+            <output id="vectorAspectValue">1.000 : 1</output>
+          </label>
+          <label class="inline-control stacked">
+            <span>旋转角度</span>
+            <input id="vectorRotation" type="number" min="-360" max="360" step="1" />
+          </label>
+        </section>
+
+        <section id="pixelToolsSection" class="panel-section">
+          <div class="section-heading"><h2>像素工具</h2></div>
+          <div class="tool-row" role="group" aria-label="绘制工具">
+            <button data-tool="draw" class="tool-button active">绘制</button>
+            <button data-tool="erase" class="tool-button">擦除</button>
+          </div>
+          <div class="palette-row" role="group" aria-label="颜色">
+            <button data-color="white" class="swatch white active" title="白色"></button>
+            <button data-color="black" class="swatch black" title="黑色"></button>
+          </div>
+          <p class="muted-copy">按住拖动连续绘制。右键临时擦除。</p>
+        </section>
+      </aside>
+
+      <section class="workspace">
+        <div class="workspace-toolbar">
+          <div class="segmented-control" role="tablist" aria-label="工作视图">
+            <button data-mode="edit" class="active" role="tab">编辑格</button>
+            <button data-mode="clean" role="tab">成品视图</button>
+          </div>
+          <div class="inline-control zoom-control">
+            <span>缩放</span>
+            <input id="zoomRange" type="range" min="1" max="28" value="16" aria-label="画布缩放比例" />
+            <button id="zoomOutBtn" class="zoom-step-button" type="button" title="缩小 1px" aria-label="缩小画布 1 像素">−</button>
+            <output id="zoomValue">16px</output>
+            <button id="zoomInBtn" class="zoom-step-button" type="button" title="放大 1px" aria-label="放大画布 1 像素">＋</button>
+          </div>
+          <button id="fitCanvasBtn" class="toolbar-button" title="让画布适配当前窗口；也可按住 Command 滚动鼠标滚轮缩放">适配</button>
+          <label class="toggle-control">
+            <input id="gridToggle" type="checkbox" checked />
+            <span>网格</span>
+          </label>
+          <label class="toggle-control">
+            <input id="referenceToggle" type="checkbox" />
+            <span>原稿参考</span>
+          </label>
+        </div>
+
+        <div id="canvasViewport" class="canvas-viewport">
+          <canvas id="editorCanvas" aria-label="像素 Logo 编辑画布"></canvas>
+        </div>
+        <div class="workspace-status">
+          <span id="cursorReadout">格坐标 —</span>
+          <span id="canvasReadout">48 × 20</span>
+          <span id="activeLayerReadout">图层：3</span>
+        </div>
+      </section>
+
+      <aside class="sidebar right-sidebar">
+        <section class="panel-section preview-section">
+          <div class="section-heading"><h2>实时预览</h2></div>
+          <div class="segmented-control compact" role="group" aria-label="预览背景">
+            <button data-preview-bg="dark" class="active">黑底</button>
+            <button data-preview-bg="light">白底</button>
+            <button data-preview-bg="transparent">透明</button>
+          </div>
+          <label class="toggle-control preview-toggle">
+            <input id="circleToggle" type="checkbox" />
+            <span>圆形头像安全区</span>
+          </label>
+          <div id="previewFrame" class="preview-frame dark">
+            <canvas id="previewCanvas" width="280" height="280"></canvas>
+          </div>
+          <div class="size-previews">
+            <figure><canvas data-preview-size="128" width="128" height="128"></canvas><figcaption>128</figcaption></figure>
+            <figure><canvas data-preview-size="64" width="64" height="64"></canvas><figcaption>64</figcaption></figure>
+            <figure><canvas data-preview-size="32" width="32" height="32"></canvas><figcaption>32</figcaption></figure>
+            <figure><canvas data-preview-size="24" width="24" height="24"></canvas><figcaption>24</figcaption></figure>
+            <figure><canvas data-preview-size="20" width="20" height="20"></canvas><figcaption>20</figcaption></figure>
+            <figure><canvas data-preview-size="16" width="16" height="16"></canvas><figcaption>16</figcaption></figure>
+          </div>
+        </section>
+
+        <section class="panel-section reference-section">
+          <div class="section-heading"><h2>原稿映射</h2></div>
+          <label class="inline-control stacked">
+            <span>参考透明度</span>
+            <input id="referenceOpacity" type="range" min="0" max="100" value="42" />
+          </label>
+          <div class="reference-actions">
+            <button id="importReferenceBtn">导入 PNG</button>
+            <button id="resetProjectBtn">恢复本工程初始</button>
+            <input id="referenceFile" type="file" accept="image/png,image/jpeg,image/webp" hidden />
+          </div>
+          <p id="mappingReadout" class="muted-copy">主题演讲 PNG · 每格 16.45 源像素</p>
+        </section>
+
+        <section class="panel-section export-section">
+          <div class="section-heading"><h2>导出</h2></div>
+          <label class="inline-control stacked">
+            <span>PNG 倍率</span>
+            <select id="exportScale">
+              <option value="1">1×</option>
+              <option value="2">2×</option>
+              <option value="4">4×</option>
+              <option value="8" selected>8×</option>
+              <option value="16">16×</option>
+              <option value="32">32×</option>
+            </select>
+          </label>
+          <div class="export-grid">
+            <button data-export="png-white">白标透明 PNG</button>
+            <button data-export="png-black">黑标透明 PNG</button>
+            <button data-export="svg">SVG</button>
+            <button data-export="json">工程 JSON</button>
+            <button id="importProjectBtn">导入 JSON</button>
+            <input id="projectFile" type="file" accept="application/json" hidden />
+          </div>
+        </section>
+
+        <section class="panel-section versions-section">
+          <div class="section-heading"><h2>版本历史</h2></div>
+          <div id="versionList" class="version-list">
+            <p class="muted-copy">尚未保存命名版本。</p>
+          </div>
+        </section>
+      </aside>
+    </main>
+
+    <dialog id="versionDialog">
+      <form method="dialog" id="versionForm">
+        <h2>保存命名版本</h2>
+        <label>
+          <span>版本名称</span>
+          <input id="versionName" required maxlength="48" placeholder="例如：O 加宽两格" />
+        </label>
+        <div class="dialog-actions">
+          <button value="cancel">取消</button>
+          <button value="default" class="primary-button">保存</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="app.js?v=20260720-1" defer></script>
+  </body>
+</html>
