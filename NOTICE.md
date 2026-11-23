@@ -1,5 +1,13 @@
 # NOTICE —— 上游项目与许可证归属
 
+## 本项目
+
+- **dsh-creative-studio（创作台）** — Copyright (C) 2026 frankfurtlin
+- 许可证：**GNU Affero General Public License v3.0 only**。全文见 [LICENSE](LICENSE)，
+  该文件保持 FSF 原始文本（机器可识别的标准格式），版权与项目声明写在本文件。
+- 选择 AGPL-3.0 的原因：本插件源码级并入了 `vendor/guizang-design`（AGPL-3.0-only，
+  © op7418），派生作品必须延续该许可。
+
 `dsh-creative-studio`（创作台）把下面几个项目的代码源码级并入本包，
 `vendor/` 下是对应版本的原样拷贝（除下述改动外，运行逻辑未修改）。
 
@@ -94,7 +102,20 @@
    设置语言 chip「English」）由 `scripts/build-client.mjs` 的 `BRAND_PATCHES['media-desk']`
    在序列化后重写（vendor 源码不动）；设计页 `i18n.js` 的 zh 词条把「skill」改为「技能」。
    品牌、格式名、API 路径、作品数据保持原样。
-9. 除上述改动外，未修改上游的运行逻辑。
+10. 创作台外壳（v0.6.0）：`src/client.js` 重写为「左栏工作台 + 统一标题区 + iframe 嵌入」结构。
+    对上游界面的改动只发生在三处：外壳注入的 `#dsh-cs-theme` 嵌入样式（隐藏重复导航、统一浅色
+    token、助手/预览布局）、`vendor/guizang-design/gallery/{app.js,i18n.js}`（空态 CTA、「用于内容」
+    跨 tab、统计卡链接、非首页隐藏重复标题）与 `vendor/pixel-logo-lab/index.html`（保存/撤销按钮
+    `title`）。threeui 组件库的改动在 `threeui-src/`（103 个中文名、复制按钮、中文搜索），
+    构建后覆盖 `vendor/threeui/`。media-desk 的 browser bundle 不改，助手开合与设置入口由外壳
+    点它自己的按钮驱动；它的 Host 代码未改。
+11. 除上述改动外，未修改上游的运行逻辑。
+
+## 0.6.1 窄窗修复（2026-11-19）
+
+- `vendor/pixel-logo-lab/styles.css` 的响应式断点会让工具面板在窄窗换行到画布下方；不直接改
+  vendor，而由插件外壳在嵌入模式下用 `#dsh-cs-theme` 覆盖为固定两栏，并让工具栏换行。
+- DSH 的抽屉汉堡检测与左栏留白也在插件外壳完成（`data-cs-shell="drawer"`）。
 
 ## 上游升级
 
