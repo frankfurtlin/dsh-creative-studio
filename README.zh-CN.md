@@ -4,11 +4,8 @@
 
 **DSH 里的内容创作工作台：写内容、做设计、找素材、改 Logo 都在一个面板里。**
 
-A content studio for DSH: ideas, drafts, decks, cards and logos in one panel.
-
 [![Version](https://img.shields.io/badge/version-0.6.1-blue)](package.json)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-green)](LICENSE)
-[![Platform](https://img.shields.io/badge/DSH-DeepSeek%20Harness-5b5ef7)](https://github.com/frankfurtlin/dsh-pocket)
 
 [English](README.md) · **简体中文**
 
