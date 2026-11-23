@@ -1,4 +1,47 @@
-# dsh-creative-studio —— 「创作台」
+<div align="center">
+
+# dsh-creative-studio 「创作台」
+
+**DSH 里的内容创作工作台：写内容、做设计、找素材、改 Logo 都在一个面板里。**
+
+A content studio for DSH: ideas, drafts, decks, cards and logos in one panel.
+
+[![Version](https://img.shields.io/badge/version-0.6.1-blue)](package.json)
+[![License](https://img.shields.io/badge/license-AGPL--3.0--only-green)](LICENSE)
+[![Platform](https://img.shields.io/badge/DSH-DeepSeek%20Harness-5b5ef7)](https://github.com/frankfurtlin/dsh-pocket)
+
+[中文](README.md) · [English](README.en.md)
+
+</div>
+
+![创作台面板](verification/shots/01-sidebar.png)
+
+## 这是什么
+
+创作台把原来分散在四个地方的创作工具收进一个 DSH 插件：`dsh-media-desk` 的自媒体工作流（灵感、内容、排期、复盘、风格）、`dsh-guizang-design` 的设计技能（网页 PPT、图文卡片、网页排版、去 AI 味）、threeui 的 103 个设计组件，以及像素 / 矢量 Logo 编辑器。侧栏只多一行入口，四个工作台共用一套浅色设计系统和统一标题区，写内容、做设计、找素材、改 Logo 都在同一个面板里切换。
+
+它解决的问题是创作流程本身要跨好几套工具：灵感和成稿在一处，卡片和 PPT 在另一处，素材和 Logo 又在别的站点，来回切换容易丢上下文。现在这些都归到「创作台」下，设计作品可以直接带进内容草稿。
+
+## 功能
+
+- **内容**：灵感、内容、排期、复盘、风格五个子视图，从一句话灵感写到成稿，并按月排期。
+- **设计**：网页 PPT、图文卡片、网页排版三个出图技能，加作品库与个人语气档案；「用于内容」可把作品带进内容工作台。
+- **素材**：threeui 组件库 103 个组件，卡片显示中文名 + 英文 API 名，中英文搜索、一键复制。
+- **Logo**：像素 / 矢量编辑器，三份母版、图层、版本快照与导出，工程数据存在本机。
+- **统一外壳**：左栏手风琴导航、统一标题区、全局「＋新建」菜单；助手默认收起，状态记在浏览器里。
+- **保活与懒加载**：四个 pane 首次访问才挂载、切走只隐藏，状态不丢；vendor 代码外置成单独文件，进创作台时才拉取。
+- **可验收**：`verification/verify-ui.mjs` 用 headless chromium 跑 68 项真实浏览器断言。
+
+## 安装
+
+```bash
+# 推荐路径：插件 → 添加插件 → 填本仓库绝对路径 → 安装 → 打开开关 → 刷新页面
+# 等价的手工方式：
+cd /root/.dsh/profiles/web
+pnpm add "dsh-creative-studio@link:/root/workspace/plugins/dsh-creative-studio"
+# 再把 "dsh-creative-studio" 加进 profile package.json 的 dsh.profile.bundles
+pnpm install && systemctl restart deepseek-harness
+```
 
 侧栏只留一条 **创作台**，面板顶部四个 tab：**内容创作**、**设计**、**设计元素**、**Logo**。
 
