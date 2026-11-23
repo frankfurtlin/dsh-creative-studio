@@ -10,7 +10,7 @@ A content studio for DSH: write, design, source assets and edit logos in one pan
 
 [中文](README.md) · [English](README.en.md)
 
-![Creative Studio panel](verification/shots/01-sidebar.png)
+![Creative Studio panel](docs/screenshots/hero.png)
 
 ## What it is
 

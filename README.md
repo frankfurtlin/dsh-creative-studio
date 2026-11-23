@@ -14,7 +14,7 @@ A content studio for DSH: ideas, drafts, decks, cards and logos in one panel.
 
 </div>
 
-![创作台面板](verification/shots/01-sidebar.png)
+![创作台面板](docs/screenshots/hero.png)
 
 ## 这是什么
 
