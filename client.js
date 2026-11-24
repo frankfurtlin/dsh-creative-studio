@@ -6,7 +6,7 @@
  * 生成的 client.js 不要手改。
  *
  * 结构：
- *   · 侧栏只注册一条「创作台」（order 5）。
+ *   · 侧栏只注册一条「创作台」（order 6）。
  *   · 主面板 = 顶部 tab 条 + 两个 pane，pane 里的组件来自两个 vendor client 注册在
  *     `main` 槽里的 entry（`ctx.slots.entriesOfSlot('main')`），按 key 取：
  *     'media-desk' / 'guizang-design'。
@@ -25,7 +25,7 @@ window.__ModuleLoader__.load({
     var h = React.createElement;
 
     var PANEL_ID = 'creative-studio';
-    var PANEL_ORDER = 5;
+    var PANEL_ORDER = 6;
     var STORAGE_KEY = 'dsh-creative-studio:tab';
 
     var TABS = [
