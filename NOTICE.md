@@ -53,7 +53,7 @@
 ## threeui-demo（设计元素组件库）
 
 - 来源：本机自主项目（`@designcodeio/threeui` 的组件画廊）。源码已整体迁入本包
-  `threeui-src/`（含 git 历史与报告生成脚本），原工作区目录 `/root/workspace/threeui-demo`
+  `threeui-src/`（含 git 历史与报告生成脚本），原工作区目录 `~/workspace/threeui-demo`
   已于 2026-11-18 删除；独立部署（`threeui-demo.service` + `/threeui/` 反代）同日下线
 - 上游组件库：`@designcodeio/threeui` 1.2.0（MIT），103 个导出组件
 - 本包内位置：`vendor/threeui/` —— 该项目的 **Vite 构建产物**（源码在 `threeui-src/`，此处只放产物）：

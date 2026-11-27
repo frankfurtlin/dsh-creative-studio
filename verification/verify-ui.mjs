@@ -10,11 +10,13 @@
  *         跨 tab「用于内容」带入、全局「＋新建」、键盘导航与 aria。
  *
  * 用法：node verification/verify-ui.mjs
- * 浏览器：优先用插件自己的 playwright；没有则退回 hermes-site 的 playwright。
+ * 浏览器：优先用插件自己的 playwright；没有则用 PLAYWRIGHT_MODULE_DIR 或
+ * 运行时家目录下 hermes-site 的安装（不写死某台机器的绝对路径）。
  */
 import { createRequire } from 'node:module'
 import { execSync } from 'node:child_process'
 import { mkdirSync } from 'node:fs'
+import { homedir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -29,7 +31,8 @@ async function loadChromium() {
     const mod = await import('playwright')
     return mod.chromium
   } catch {
-    const require = createRequire('/root/workspace/hermes-site/tools/node_modules/')
+    const dir = process.env.PLAYWRIGHT_MODULE_DIR || join(homedir(), 'workspace/hermes-site/tools/node_modules')
+    const require = createRequire(join(dir, 'noop.js'))
     return require('playwright').chromium
   }
 }
