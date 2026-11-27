@@ -35,11 +35,11 @@
 
 ## pixel-logo-lab（像素 / 矢量 Logo 编辑器）
 
-- 来源：本机项目 `/root/workspace/pixel-logo-lab`（Web3 Odyssey 的内部工具，作者与版权归本项目所有者）；
-  原目录已归档为 `/root/workspace/plugins/_backup/pixel-logo-lab-20261118.tgz`
+- 来源：本机项目 `pixel-logo-lab`（Web3 Odyssey 的内部工具，作者与版权归本项目所有者）
 - 版本：无 npm 包；页面取自该项目 2026-11 的快照（`index.html`、`app.js`、`styles.css`、
   `assets/fonts/`、`data/` 下三份母版与自动保存快照）
-- 许可证：该项目没有 LICENSE 文件，仅在本机自用，不对外分发
+- 许可证：作者与本仓库所有者相同。该项目原本只是本机自用、没有 LICENSE 文件；并入本仓库后，
+  这段代码随本仓库以 **AGPL-3.0-only** 分发（见根目录 `LICENSE`）
 - 本包内位置：`vendor/pixel-logo-lab/`（静态页面与资源）、`lib/pixel-logo.js`（API 与静态服务）
 - 用途：创作台第三个 tab「Logo」——`/pixel-logo/*` 编辑器页面，以及
   `/pixel-logo/api/project`、`/pixel-logo/api/versions` 持久化 API。
@@ -123,5 +123,5 @@
 重新生成 `client.js`，再跑 `node verification/verify-ui.mjs`。
 
 Logo 编辑器没有上游包：`vendor/pixel-logo-lab/` 就是当前源码；如果要回到更早的版本，
-从归档 `/root/workspace/plugins/_backup/pixel-logo-lab-20261118.tgz` 里取页面与母版，
+从 2026-11-18 的本地归档（`_backup/pixel-logo-lab-20261118.tgz`，不在本仓库内）里取页面与母版，
 并同步 `lib/pixel-logo.js` 里对应的接口变化。
