@@ -31,11 +31,13 @@
 
 ## 安装
 
+下面的命令假设仓库检出在 `/opt/dsh/dsh-creative-studio`，放在别处就替换成实际路径。
+
 ```bash
 # 推荐路径：插件 → 添加插件 → 填本仓库绝对路径 → 安装 → 打开开关 → 刷新页面
 # 等价的手工方式：
-cd /root/.dsh/profiles/web
-pnpm add "dsh-creative-studio@link:/root/workspace/plugins/dsh-creative-studio"
+cd ~/.dsh/profiles/web
+pnpm add "dsh-creative-studio@link:/opt/dsh/dsh-creative-studio"
 # 再把 "dsh-creative-studio" 加进 profile package.json 的 dsh.profile.bundles
 pnpm install && systemctl restart deepseek-harness
 ```
@@ -51,7 +53,7 @@ pnpm install && systemctl restart deepseek-harness
 内容创作与设计原本是两个独立插件（`dsh-media-desk` 与 `dsh-guizang-design`），v0.2.0 起
 **源码级并入**本插件（`vendor/`），npm 上那两个包已从 profile 卸载；v0.2.1 起界面上的第三方
 名称、logo、版本号全部换成「创作台」自己的品牌。Logo 编辑器原来是独立项目
-`/root/workspace/pixel-logo-lab`（Python 小服务 + Caddy `/pixel` 部署），v0.3.0 起页面与
+`~/workspace/pixel-logo-lab`（Python 小服务 + Caddy `/pixel` 部署），v0.3.0 起页面与
 持久化 API 也并进本插件，成为第三个 tab。
 
 ```
@@ -96,7 +98,7 @@ dsh-creative-studio/
 ├── scripts/build-client.mjs# 生成 client.js：内联 factory + 品牌字符串重写
 ├── vendor/media-desk/      # 上游 dsh-media-desk@2.7.1（MIT）拷贝 + 品牌文案改动
 ├── vendor/guizang-design/  # 上游 dsh-guizang-design@0.1.4（AGPL-3.0）拷贝 + 品牌改动
-├── vendor/pixel-logo-lab/  # 原 /root/workspace/pixel-logo-lab 的页面、字体与三份母版
+├── vendor/pixel-logo-lab/  # 原 ~/workspace/pixel-logo-lab 的页面、字体与三份母版
 ├── lib/elements.js        # 「设计元素」静态服务（/studio-elements）
 ├── vendor/threeui/        # 组件库构建产物（组件页面 + 落地页 + 书本 PNG）
 ├── threeui-src/           # 组件库源码（含 git 历史、报告生成脚本），构建产物从这儿出
@@ -221,7 +223,7 @@ Logo 编辑器没有上游包：`vendor/pixel-logo-lab/` 现在就是唯一源�
 
 ## 原来的独立部署已删除
 
-Logo 编辑器原来还有一份独立部署（`/root/workspace/pixel-logo-lab` 的 Python `server.py`、
+Logo 编辑器原来还有一份独立部署（`~/workspace/pixel-logo-lab` 的 Python `server.py`、
 systemd `pixel-logo-lab.service` → `127.0.0.1:4173`、Caddy `/pixel` 反代）。2026-11-18 起
 这份部署已下线并删除：服务与开机自启、Caddy 的 `/pixel` 路由都已移除，**面板是唯一入口**
 （走 DSH 登录态）。
@@ -229,8 +231,8 @@ systemd `pixel-logo-lab.service` → `127.0.0.1:4173`、Caddy `/pixel` 反代）
 - 编辑数据在 `$DSH_HOME/pixel-logo-lab/`（`current-project.json` + `history/`），首次运行时
   用打包的 `data/current-project.json` 做种子；
 - 原项目（源码、造字脚本、`data/` 母版与旧自动保存快照）已打包归档到
-  `/root/workspace/plugins/_backup/pixel-logo-lab-20261118.tgz`，工作目录
-  `/root/workspace/pixel-logo-lab` 已删除；插件运行不依赖它。
+  `~/workspace/plugins/_backup/pixel-logo-lab-20261118.tgz`，工作目录
+  `~/workspace/pixel-logo-lab` 已删除；插件运行不依赖它。
 
 ## 依赖
 
@@ -250,7 +252,7 @@ PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm install
 
 ## 安装
 
-本机约定：插件源码在 `/root/workspace/plugins/dsh-creative-studio`，profile 以 `link:` 依赖引用。
+本机约定：插件源码在 `/opt/dsh/dsh-creative-studio`，profile 以 `link:` 依赖引用。
 
 推荐走 GUI：**插件 → 添加插件** → 填本目录的绝对路径 → 安装，然后在「已安装插件」列表里
 把 `dsh-creative-studio` 的开关打开（安装只装依赖，开关才是挂载 bundle）。之后浏览器刷新即可。
@@ -258,8 +260,8 @@ PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm install
 手工方式（等价）：
 
 ```bash
-cd /root/.dsh/profiles/web
-# package.json: dependencies 加 "dsh-creative-studio": "link:/root/workspace/plugins/dsh-creative-studio"
+cd ~/.dsh/profiles/web
+# package.json: dependencies 加 "dsh-creative-studio": "link:/opt/dsh/dsh-creative-studio"
 #              dsh.profile.bundles 末尾加 "dsh-creative-studio"
 pnpm install
 systemctl restart deepseek-harness
@@ -273,7 +275,7 @@ systemctl restart deepseek-harness
 v0.1.x 的老架构依赖并隐藏原插件；v0.2.x 已经把两个上游源码搬进 `vendor/`，原 npm 包已从
 profile 删除。若要回退到「两个原插件分别安装」的状态：
 
-1. 备份包在 `/root/workspace/plugins/_backup/`：
+1. 备份包在 `~/workspace/plugins/_backup/`：
    `dsh-media-desk-2.7.1.tgz`、`dsh-guizang-design-0.1.4.tgz`；
 2. 插件页关掉 `dsh-creative-studio`；
 3. 在 profile 里 `pnpm add dsh-media-desk@2.7.1 dsh-guizang-design@0.1.4`（或指向解开的备份目录），

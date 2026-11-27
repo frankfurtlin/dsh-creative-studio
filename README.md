@@ -36,9 +36,11 @@ The short path is the plugin page: **Add plugin** → paste this repo's absolute
 
 The equivalent manual install, inside the DSH web profile:
 
+The commands below assume the checkout is at `/opt/dsh/dsh-creative-studio` — substitute your own path if it lives elsewhere.
+
 ```bash
-cd /root/.dsh/profiles/web
-pnpm add "dsh-creative-studio@link:/root/workspace/plugins/dsh-creative-studio"
+cd ~/.dsh/profiles/web
+pnpm add "dsh-creative-studio@link:/opt/dsh/dsh-creative-studio"
 ```
 
 Then add `"dsh-creative-studio"` to `dsh.profile.bundles` in that profile's `package.json` and restart the host:
