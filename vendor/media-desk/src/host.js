@@ -23,8 +23,9 @@ import { localizeSamples, samplesNeedLocale } from './seed.js'
 const ASSETS_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'assets')
 const MAX_JSON = 4_000_000
 const MAX_UPLOAD = 250_000_000
-const MIME = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.gif': 'image/gif', '.mp4': 'video/mp4', '.webm': 'video/webm', '.mov': 'video/quicktime' }
-const UPLOAD_EXT = Object.fromEntries(Object.entries(MIME).filter(([ext]) => ext !== '.jpeg').map(([ext, type]) => [type, ext]))
+const MIME = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.gif': 'image/gif', '.mp4': 'video/mp4', '.webm': 'video/webm', '.mov': 'video/quicktime', '.js': 'text/javascript; charset=utf-8' }
+// .js 只用于读取（vendor-factories.js 按需加载），不开放上传，故从 UPLOAD_EXT 里排除。
+const UPLOAD_EXT = Object.fromEntries(Object.entries(MIME).filter(([ext]) => ext !== '.jpeg' && ext !== '.js').map(([ext, type]) => [type, ext]))
 
 function json(res, status, body) {
   res.statusCode = status

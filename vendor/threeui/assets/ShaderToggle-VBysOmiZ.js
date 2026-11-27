@@ -1,4 +1,4 @@
-import{r as c,j as y}from"./index-COsh79Tc.js";import{m as J,f as p}from"./toggleMode-D-iQFO55.js";const K=`
+import{r as c,j as y}from"./index-DYHYnpu0.js";import{m as J,f as p}from"./toggleMode-t_P0idUX.js";const K=`
 attribute vec2 aPosition;
 void main() {
   gl_Position = vec4(aPosition, 0.0, 1.0);

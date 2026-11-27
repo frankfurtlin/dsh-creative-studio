@@ -77,6 +77,7 @@ function workCard(w) {
     </div>
     <div class="work-foot">
       <span class="date">${date(w.updatedAt)}</span>
+      <button class="btn ghost" data-handoff="${esc(w.id)}" title="${esc(t('work.handoffTip'))}">${t('work.handoff')}</button>
       <button class="btn" data-next="${esc(w.id)}" title="${esc(t('work.nextTip'))}">${t('work.next')}</button>
       <button class="ibtn" data-remove="${esc(w.id)}" title="${esc(t('work.remove'))}" aria-label="${esc(t('work.removeLabel'))}">${icon('trash')}</button>
     </div>
@@ -101,7 +102,7 @@ function exampleTable(list) {
   </div>`
 }
 
-const emptyWorks = () => `<div class="empty">${t('works.empty')}</div>`
+const emptyWorks = () => `<div class="empty"><span>${t('works.empty')}</span><button class="btn empty-cta" data-empty-start>${t('works.emptyCta')}</button></div>`
 
 // 档案是 Markdown：只渲染标题、列表和段落
 function md(text) {
@@ -152,10 +153,10 @@ const VIEWS = {
     const { skills, works, recipes, examples, columns, voice } = data
     return `${head(t('home.eyebrow'), t('home.title'), t('home.desc'))}
       <div class="stats">
-        <div class="stat"><span class="mono">${t('stat.works')}</span><div class="val">${works.length}</div><div class="sub">${t('stat.worksSub')}</div></div>
-        <div class="stat"><span class="mono">${t('stat.columns')}</span><div class="val">${columns.length}</div><div class="sub">${t('stat.columnsSub', columns.reduce((n, c) => n + c.issues, 0))}</div></div>
-        <div class="stat"><span class="mono">${t('stat.flows')}</span><div class="val">${recipes.length}</div><div class="sub">${t('stat.flowsSub')}</div></div>
-        <div class="stat"><span class="mono">${t('stat.voice')}</span><div class="val">${t(voice.exists ? 'stat.voiceYes' : 'stat.voiceNo')}</div><div class="sub">${voice.exists ? esc(voice.updated || '') : t('stat.voiceSub')}</div></div>
+        <a class="stat" href="#/works" title="${esc(t('nav.works'))}"><span class="mono">${t('stat.works')}</span><div class="val">${works.length}</div><div class="sub">${t('stat.worksSub')}</div></a>
+        <a class="stat" href="#/works" title="${esc(t('nav.works'))}"><span class="mono">${t('stat.columns')}</span><div class="val">${columns.length}</div><div class="sub">${t('stat.columnsSub', columns.reduce((n, c) => n + c.issues, 0))}</div></a>
+        <a class="stat" href="#/workflows" title="${esc(t('nav.workflows'))}"><span class="mono">${t('stat.flows')}</span><div class="val">${recipes.length}</div><div class="sub">${t('stat.flowsSub')}</div></a>
+        <a class="stat" href="#/voice" title="${esc(t('nav.voice'))}"><span class="mono">${t('stat.voice')}</span><div class="val">${t(voice.exists ? 'stat.voiceYes' : 'stat.voiceNo')}</div><div class="sub">${voice.exists ? esc(voice.updated || '') : t('stat.voiceSub')}</div></a>
       </div>
       <section>${secHead('01', t('sec.start'))}
         <div class="banners">${skills.map((s) => `
@@ -325,6 +326,18 @@ document.addEventListener('click', async (e) => {
   if (b?.dataset.viewer === 'close') return closeViewer()
   if (b?.dataset.viewer === 'full') return viewer.requestFullscreen().catch(() => toast(t('viewer.noFull')))
   if (!b || !data) return
+  if (b.dataset.emptyStart) { location.hash = '#/'; return }
+  if (b.dataset.handoff) {
+    const w = data.works.find((x) => x.id === b.dataset.handoff)
+    if (w) {
+      if (window.parent !== window) {
+        window.parent.postMessage({ type: 'dsh-cs:use-work', id: w.id, title: w.title, skill: w.skill }, location.origin)
+      } else {
+        toast(t('work.handoffDone'))
+      }
+    }
+    return
+  }
   if (b.dataset.starter) start(data.skills.find((s) => s.name === b.dataset.starter).starter)
   else if (b.dataset.recipe) start(data.recipes.find((r) => r.id === b.dataset.recipe).prompt)
   else if (b.dataset.next) start([...data.works, ...data.examples].find((w) => w.id === b.dataset.next).next)

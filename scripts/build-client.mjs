@@ -107,13 +107,31 @@ function build() {
     throw new Error(`src/client.js 里找不到标记 ${MARKER}`);
   }
 
-  const lines = ['    /* ---- 以下两个 factory 由 scripts/build-client.mjs 自动生成，勿手改 ---- */'];
+  // 2026-11-20：vendor factory 不再内联进 client.js。
+  // 原因：client.js 会在 DSH 启动时被所有插件一起预加载，340KB 里约 270KB 是这两个
+  // factory。改成写进 vendor/media-desk/assets/（该目录已由 host 以静态资源提供），
+  // 由 client.js 在用户第一次打开「创作台」时用 <script> 拉取。
+  // 因此这里只生成外部文件，inlined 位置留空。
+  const externals = [];
   for (const entry of VENDORED) {
     const { id, serialized } = captureFactory(entry);
-    lines.push(`    // vendored: ${id} ← ${entry.file.slice(ROOT.length + 1)}`);
-    lines.push(`    var ${entry.varName} = ${serialized};`);
-    lines.push('');
+    externals.push(`  // vendored: ${id} ← ${entry.file.slice(ROOT.length + 1)}`);
+    externals.push(`  ${entry.varName === '__mediaDeskFactory' ? 'mediaDesk' : 'guizang'}: (${serialized})`);
   }
+
+  const externalSource =
+    '/* GENERATED FILE — 由 scripts/build-client.mjs 生成，勿手改。\n' +
+    ' * 供 client.js 在首次打开「创作台」时按需加载。\n' +
+    ' */\n' +
+    'window.__DSH_CS_FACTORIES__ = {\n' +
+    externals.join(',\n') +
+    '\n};\n';
+
+  new Function(externalSource); // 语法检查
+  const externalTarget = join(ROOT, 'vendor/media-desk/assets/vendor-factories.js');
+  writeFileSync(externalTarget, externalSource, 'utf8');
+
+  const lines = ['    /* ---- vendor factory 已外置，见 vendor/media-desk/assets/vendor-factories.js ---- */'];
 
   const output = template.split(MARKER).join(lines.join('\n'));
 
@@ -126,9 +144,7 @@ function build() {
   writeFileSync(target, banner + output, 'utf8');
 
   console.log(`built ${target} (${output.length} chars)`);
-  for (const entry of VENDORED) {
-    console.log(`  inline ${entry.name}`);
-  }
+  console.log(`built ${externalTarget} (${externalSource.length} chars, 按需加载)`);
 }
 
 build();
